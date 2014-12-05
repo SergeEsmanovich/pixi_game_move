@@ -22,6 +22,11 @@
     var texture = PIXI.Texture.fromImage("player.png");
     // create a new Sprite using the texture
     var bunny = new PIXI.Sprite(texture);
+
+    var image_ground = new PIXI.Texture.fromImage('ground.jpg');
+    var ground = new PIXI.TilingSprite(image_ground, 800, 800);
+    stage.addChild(ground);
+
     // center the sprites anchor point
     bunny.anchor.x = 0.5;
     bunny.anchor.y = 0.5;
@@ -49,6 +54,7 @@
                 move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
                 move.active = 1;
                 move.time += 0.1;
+
                 //console.log(move.shag);
             }
             //Вниз  
@@ -128,6 +134,7 @@
                     movie.position.y = 800;
                 if (movie.animationSpeed < 0.05)
                     movie.animationSpeed = Math.sqrt(move.time / 100);
+                ground.tilePosition.y += move.shag;
                 // console.log(move.shag);
 
             }
@@ -138,6 +145,7 @@
                     movie.position.y = 0;
                 if (movie.animationSpeed < 0.05)
                     movie.animationSpeed = Math.sqrt(move.time / 100);
+                ground.tilePosition.y -= move.shag;
 
             }
             if (move.napravlenie == 3) { //вправо
@@ -147,7 +155,7 @@
                     movie.position.x = 0;
                 if (movie.animationSpeed < 0.05)
                     movie.animationSpeed = Math.sqrt(move.time / 100);
-
+                ground.tilePosition.x -= move.shag;
             }
             if (move.napravlenie == 4) { //влево
                 movie.rotation = Math.PI;
@@ -156,6 +164,7 @@
                     movie.position.x = 800;
                 if (movie.animationSpeed < 0.05)
                     movie.animationSpeed = Math.sqrt(move.time / 100);
+                ground.tilePosition.x += move.shag;
             }
         }
         if (move.active == 2) {
