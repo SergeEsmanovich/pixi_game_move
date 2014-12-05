@@ -49,7 +49,7 @@
                 move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
                 move.active = 1;
                 move.time += 0.1;
-                console.log(move.shag);
+                //console.log(move.shag);
             }
             //Вниз  
             if (event.which == 40) {
@@ -124,30 +124,38 @@
             if (move.napravlenie == 1) { //вверх
                 movie.rotation = 3 * Math.PI / 2;
                 movie.position.y -= move.shag;
+                if (movie.position.y < 0)
+                    movie.position.y = 800;
                 if (movie.animationSpeed < 0.05)
-                    movie.animationSpeed += 0.001;
+                    movie.animationSpeed = Math.sqrt(move.time / 100);
                 // console.log(move.shag);
 
             }
             if (move.napravlenie == 2) { //вниз
                 movie.rotation = Math.PI / 2;
                 movie.position.y += move.shag;
+                if (movie.position.y > 800)
+                    movie.position.y = 0;
                 if (movie.animationSpeed < 0.05)
-                    movie.animationSpeed += 0.001;
+                    movie.animationSpeed = Math.sqrt(move.time / 100);
 
             }
             if (move.napravlenie == 3) { //вправо
                 movie.rotation = 2 * Math.PI;
                 movie.position.x += move.shag;
+                if (movie.position.x > 800)
+                    movie.position.x = 0;
                 if (movie.animationSpeed < 0.05)
-                    movie.animationSpeed += 0.001;
+                    movie.animationSpeed = Math.sqrt(move.time / 100);
 
             }
             if (move.napravlenie == 4) { //влево
                 movie.rotation = Math.PI;
                 movie.position.x -= move.shag;
+                if (movie.position.x > 800)
+                    movie.position.x = 0;
                 if (movie.animationSpeed < 0.05)
-                    movie.animationSpeed += 0.001;
+                    movie.animationSpeed = Math.sqrt(move.time / 100);
             }
         }
         if (move.active == 2) {
