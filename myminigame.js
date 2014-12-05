@@ -33,7 +33,7 @@
     var move = {
 
         napravlenie: 0,
-        shag: 1,
+        shag: 0,
         time: 0.1,
         active: 0
     };
@@ -46,30 +46,31 @@
             if (event.which == 38) {
                 move.napravlenie = 1; //вверх
                 //Замедлление начала движения
-                move.shag = ((move.shag * move.time) < 4) ? move.shag * move.time : 3;
+                move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
                 move.active = 1;
-                move.time += move.time;
+                move.time += 0.1;
+                console.log(move.shag);
             }
             //Вниз  
             if (event.which == 40) {
                 move.napravlenie = 2; //вниз
-                move.shag = ((move.shag * move.time) < 4) ? move.shag * move.time : 3;
+                move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
                 move.active = 1;
-                move.time += move.time;
+                move.time += 0.1;
             }
             //Влево
             if (event.which == 37) {
                 move.napravlenie = 4; //влево
-                move.shag = ((move.shag * move.time) < 4) ? move.shag * move.time : 3;
+                move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
                 move.active = 1;
-                move.time += move.time;
+                move.time += 0.1;
             }
             //Вправо
             if (event.which == 39) {
                 move.napravlenie = 3; //вправо
-                move.shag = ((move.shag * move.time) < 4) ? move.shag * move.time : 3;
+                move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
                 move.active = 1;
-                move.time += move.time;
+                move.time += 0.1;
             }
 
         });
