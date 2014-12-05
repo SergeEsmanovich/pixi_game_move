@@ -152,8 +152,8 @@
             if (move.napravlenie == 4) { //влево
                 movie.rotation = Math.PI;
                 movie.position.x -= move.shag;
-                if (movie.position.x > 800)
-                    movie.position.x = 0;
+                if (movie.position.x < 0)
+                    movie.position.x = 800;
                 if (movie.animationSpeed < 0.05)
                     movie.animationSpeed = Math.sqrt(move.time / 100);
             }
