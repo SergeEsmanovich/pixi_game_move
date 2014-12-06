@@ -200,7 +200,8 @@ function animate() {
     }
     if (move.active == 2) {
         movie.animationSpeed = 0.01;
-        // movie.gotoAndStop(0);
+        movie.gotoAndStop(0);
+        move.active = 0;
     }
     // render the stage
     renderer.render(stage);
