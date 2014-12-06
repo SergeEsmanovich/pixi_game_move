@@ -38,6 +38,8 @@ var point = {
     }
 }
 
+torel_point = point;
+
 function norm(vector) {
     var Way = {
         x: 1,
@@ -115,6 +117,13 @@ function onAssetsLoaded() {
     };
     //frames.push(PIXI.Texture.fromFrame("player6.png"));
     movie = new PIXI.MovieClip(frames);
+    turel = new PIXI.MovieClip(frames);
+    turel.position.x = 100;
+    turel.position.y = 100;
+    turel.anchor.x = turel.anchor.y = 0.5;
+    stage.addChild(turel);
+
+
     movie.position.x = 300;
     movie.position.y = 300;
     movie.anchor.x = movie.anchor.y = 0.5;
@@ -143,6 +152,14 @@ function animate() {
         movie.position.y += point.vector.y / 100;
         ground.tilePosition.x -= point.vector.x / 100;
         ground.tilePosition.y -= point.vector.y / 100;
+        turel.position.x -= point.vector.x / 100;
+        turel.position.y -= point.vector.y / 100;
+
+        torel_point.vector.x = movie.position.x - turel.position.x;
+        torel_point.vector.y = movie.position.y - turel.position.y;
+
+        turel.rotation = Math.atan2(torel_point.vector.y, torel_point.vector.x);
+
 
         if ((movie.position.x + 5 > point.x) && (movie.position.x - 5 < point.x))
             if ((movie.position.y + 5 > point.y) && (movie.position.y - 5 < point.y)) {
