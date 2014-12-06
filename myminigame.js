@@ -155,7 +155,7 @@ function animate() {
 
 
     if (move.active == 1) { //Начало движения
-        // movie.stop();
+        point.active = 0;
         movie.play();
 
         if (move.napravlenie == 1) { //вверх
