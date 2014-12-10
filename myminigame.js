@@ -3,7 +3,7 @@ var stage = new PIXI.Stage(0x66FF99, interactive);
 var renderer = PIXI.autoDetectRenderer(800, 800);
 var image_ground = new PIXI.Texture.fromImage('ground.jpg');
 var ground = new PIXI.TilingSprite(image_ground, 800, 800);
-var assetsToLoader = ["2gta3.json"];
+var assetsToLoader = ["2gta3.json", "fighter.json", "zombie_spawn.json", "zombie_walk.json"];
 loader = new PIXI.AssetLoader(assetsToLoader);
 loader.onComplete = onAssetsLoaded
 loader.load();
@@ -30,12 +30,8 @@ var point = {
         x: 0,
         y: 0
     },
-    Speed: 0,
-    Normalize: function() {
-        this.Speed = Math.sqrt(this.vector.x * this.vector.x + this.vector.y * this.vector.y); //вычислили длину вектора
-        this.Way.x *= 1 / this.Speed; //нормализуем вектор
-        this.Way.y *= 1 / this.Speed;
-    }
+    Speed: 0
+
 }
 
 torel_point = point;
@@ -65,6 +61,9 @@ $(document).ready(function() {
     //Клавиша нажата
     $(document).keydown(function(event) {
 
+        if (event.which == 70) {
+            turel.active = 1;
+        }
         //Вверх
         if (event.which == 38) {
             move.napravlenie = 1; //вверх
@@ -108,8 +107,46 @@ $(document).ready(function() {
 
 });
 
+var zombie_walk = [];
+
 function onAssetsLoaded() {
-    var texture = PIXI.Texture.fromImage("player.png");
+    var zombie_spawn = [];
+    for (var i = 0; i < 25; i++) {
+        zombie_spawn.push(PIXI.Texture.fromFrame("zombie" + i + ".png"));
+    };
+
+
+    for (var i = 0; i < 22; i++) {
+        zombie_walk.push(PIXI.Texture.fromFrame("zombie_walk" + i + ".png"));
+    };
+
+    zombi = new PIXI.MovieClip(zombie_spawn);
+    zombi.position.x = 200;
+    zombi.position.y = 200;
+    zombi.anchor.x = zombi.anchor.y = 0.5;
+    zombi.animationSpeed = 0.4;
+    stage.addChild(zombi);
+    zombi.interactive = true;
+    zombi.active = 1;
+    zombi.time = 0;
+    zombi.click = function() {
+        zombi.textures = zombie_walk;
+        console.log(zombi);
+        zombi.stop();
+        zombi.play();
+    }
+
+
+
+    zombi.play();
+
+    var frames2 = [];
+
+    for (var i = 0; i < 30; i++) {
+        var val = i < 10 ? "0" + i : i;
+        frames2.push(PIXI.Texture.fromFrame("rollSequence00" + val + ".png"));
+    };
+
     var frames = [];
     for (var i = 0; i < 7; i++) {
         var val = i;
@@ -118,18 +155,28 @@ function onAssetsLoaded() {
     //frames.push(PIXI.Texture.fromFrame("player6.png"));
     movie = new PIXI.MovieClip(frames);
     turel = new PIXI.MovieClip(frames);
+
+
+
     turel.position.x = 100;
     turel.position.y = 100;
     turel.anchor.x = turel.anchor.y = 0.5;
     stage.addChild(turel);
 
 
-    movie.position.x = 300;
-    movie.position.y = 300;
+    movie.position.x = 400;
+    movie.position.y = 400;
     movie.anchor.x = movie.anchor.y = 0.5;
     movie.animationSpeed = 0.01;
-
     stage.addChild(movie);
+
+    turel.interactive = true;
+    turel.click = function() {
+
+
+    }
+
+
     // start animating
     requestAnimFrame(animate);
 }
@@ -137,9 +184,57 @@ function onAssetsLoaded() {
 
 function animate() {
     requestAnimFrame(animate);
+    if (turel.active == 1) {
+        turel.animationSpeed = 0.09;
 
+        turel.play();
+
+        turel.active = 0;
+    }
+
+    if (zombi.active == 1) {
+        zombi.time += 1;
+    }
+
+    if (zombi.time > 60) {
+        zombi.active = 0;
+        zombi.textures = zombie_walk;
+        //  console.log(zombi);
+        zombi.gotoAndStop(24);
+        zombi.play();
+        zombi.time = 0;
+
+        zombi.active = 2;
+
+    }
+
+
+    if (zombi.active == 2) {
+        //Зомби бежит за игроком
+        vector_to_player = {
+            x: movie.position.x - zombi.position.x,
+            y: movie.position.y - zombi.position.y
+        }
+        modul_player = Math.sqrt(vector_to_player.x * vector_to_player.x + vector_to_player.y * vector_to_player.y);
+
+        zombi.position.x += vector_to_player.x / modul_player;
+        zombi.position.y += vector_to_player.y / modul_player;
+        //Зомби смотрит на игрока
+        zombi.rotation = Math.atan2(vector_to_player.y, vector_to_player.x);
+
+        if ((zombi.position.x + 5 > movie.position.x) && (zombi.position.x - 5 < movie.position.x))
+            if ((zombi.position.y + 5 > movie.position.y) && (zombi.position.y - 5 < movie.position.y)) {
+                zombi.gotoAndStop(0);
+                zombi.active = 3;
+
+            }
+    }
 
     if (point.active == 1) {
+
+
+
+        //console.log(movie);
         movie.animationSpeed = 0.09;
         // movie.stop();
         movie.play();
@@ -148,12 +243,23 @@ function animate() {
         point.vector.k = (point.y - movie.position.y) / (point.x - movie.position.x);
         movie.rotation = Math.atan2(point.vector.y, point.vector.x);
         //point.active = 0;
-        movie.position.x += point.vector.x / 100;
-        movie.position.y += point.vector.y / 100;
-        ground.tilePosition.x -= point.vector.x / 100;
-        ground.tilePosition.y -= point.vector.y / 100;
-        turel.position.x -= point.vector.x / 100;
-        turel.position.y -= point.vector.y / 100;
+        //
+
+
+        modul = Math.sqrt(point.vector.x * point.vector.x + point.vector.y * point.vector.y);
+
+
+        movie.position.x += 3 * point.vector.x / modul;
+        movie.position.y += 3 * point.vector.y / modul;
+
+
+
+        // ground.tilePosition.x -= point.vector.x / modul;
+        // ground.tilePosition.y -= point.vector.y / modul;
+        // turel.position.x -= point.vector.x / modul;
+        //  turel.position.y -= point.vector.y / modul;
+
+
 
         torel_point.vector.x = movie.position.x - turel.position.x;
         torel_point.vector.y = movie.position.y - turel.position.y;
@@ -165,7 +271,7 @@ function animate() {
             if ((movie.position.y + 5 > point.y) && (movie.position.y - 5 < point.y)) {
                 movie.gotoAndStop(0);
                 point.active = 0;
-
+                point.Speed = 0;
             }
     }
 

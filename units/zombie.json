@@ -1,0 +1,536 @@
+{
+	"frames": {
+		"zombie0.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 0,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie1.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 105,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie2.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 210,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie3.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 315,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie4.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 420,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie5.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 525,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie6.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 630,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie7.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 735,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie8.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 840,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie9.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 945,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie10.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1050,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie11.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1155,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie12.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1260,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie13.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1365,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie14.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1470,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie15.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1575,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie16.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1680,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie17.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1785,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie18.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1890,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie19.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 1995,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie20.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 2100,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie21.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 2205,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie22.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 2310,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie23.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 2415,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie24.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 2520,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		},
+		"zombie25.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 2625,
+				"h": "160"
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": "105",
+				"h": "160"
+			},
+			"sourceSize": {
+				"w": "105",
+				"h": "160"
+			}
+		}
+	},
+	"meta": {
+		"app": "my",
+		"version": "1.0",
+		"image": "zombie_spawn.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": "2730",
+			"h": "160"
+		},
+		"scale": "1",
+		"smartupdate": "$TexturePacker:SmartUpdate:2f213a6b451f9f5719773418dfe80ae8$"
+	}
+}
