@@ -3,7 +3,7 @@ var stage = new PIXI.Stage(0x66FF99, interactive);
 var renderer = PIXI.autoDetectRenderer(800, 800);
 var image_ground = new PIXI.Texture.fromImage('ground.jpg');
 var ground = new PIXI.TilingSprite(image_ground, 800, 800);
-var assetsToLoader = ["2gta3.json", "fighter.json", "zombie_spawn.json", "zombie_walk.json"];
+var assetsToLoader = ["2gta3.json", "fighter.json", "zombie_spawn.json", "zombie_walk.json","zombie_attack.json"];
 loader = new PIXI.AssetLoader(assetsToLoader);
 loader.onComplete = onAssetsLoaded
 loader.load();
@@ -108,11 +108,12 @@ $(document).ready(function() {
 });
 
 var zombie_walk = [];
-
+var zombie_attack = [];
 function onAssetsLoaded() {
     var zombie_spawn = [];
     for (var i = 0; i < 25; i++) {
         zombie_spawn.push(PIXI.Texture.fromFrame("zombie" + i + ".png"));
+        zombie_attack.push(PIXI.Texture.fromFrame("zombie_attack" + i + ".png"));
     };
 
 
@@ -125,7 +126,7 @@ function onAssetsLoaded() {
     zombi.position.y = 200;
     zombi.anchor.x = zombi.anchor.y = 0.5;
     zombi.animationSpeed = 0.4;
-    stage.addChild(zombi);
+   
     zombi.interactive = true;
     zombi.active = 1;
     zombi.time = 0;
@@ -169,7 +170,7 @@ function onAssetsLoaded() {
     movie.anchor.x = movie.anchor.y = 0.5;
     movie.animationSpeed = 0.01;
     stage.addChild(movie);
-
+    stage.addChild(zombi);
     turel.interactive = true;
     turel.click = function() {
 
@@ -210,6 +211,9 @@ function animate() {
 
 
     if (zombi.active == 2) {
+         zombi.textures = zombie_walk;
+        // zombi.gotoAndStop(25);
+         zombi.play();
         //Зомби бежит за игроком
         vector_to_player = {
             x: movie.position.x - zombi.position.x,
@@ -221,18 +225,22 @@ function animate() {
         zombi.position.y += vector_to_player.y / modul_player;
         //Зомби смотрит на игрока
         zombi.rotation = Math.atan2(vector_to_player.y, vector_to_player.x);
-
-        if ((zombi.position.x + 5 > movie.position.x) && (zombi.position.x - 5 < movie.position.x))
-            if ((zombi.position.y + 5 > movie.position.y) && (zombi.position.y - 5 < movie.position.y)) {
+  
+  if ((zombi.position.x + 50 > movie.position.x) && (zombi.position.x - 50 < movie.position.x))
+            if ((zombi.position.y + 50 > movie.position.y) && (zombi.position.y - 50 < movie.position.y)) {
                 zombi.gotoAndStop(0);
                 zombi.active = 3;
-
+               zombi.textures  =  zombie_attack;
+               zombi.gotoAndStop(22);
+               zombi.play();
             }
+        
     }
+
 
     if (point.active == 1) {
 
-
+ zombi.active = 2;  
 
         //console.log(movie);
         movie.animationSpeed = 0.09;
