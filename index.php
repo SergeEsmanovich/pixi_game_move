@@ -1,6 +1,7 @@
-<!DOCTYPE HTML>
+<?php header("Access-Control-Allow-Origin: http://localhost:85"); ?><!DOCTYPE HTML>
 <html>
     <head>
+  
         <title>pixi.js example 1</title>
         <style>
                                 body {
@@ -16,6 +17,7 @@
         </style>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
         <script src="pixi.js"></script>
+        <script src="socket.io.min.js"></script>
         <script src="myminigame.js"></script>
         
     </head>

@@ -1,339 +1,298 @@
+var target;
+var position;
+var rotation;
+var player2;
+var players = [];
+var socket;
+//function chat() {
+if (navigator.userAgent.toLowerCase().indexOf('chrome') != -1) {
+    socket = io.connect('http://localhost:85', {
+        'transports': ['xhr-polling']
+    });
+} else {
+    socket = io.connect('http://localhost:85');
+}
+//}
+$(document).ready(function() {
+    //  chat();
+});
+/*
+Рздел объявления данных
+ */
 var interactive = true;
 var stage = new PIXI.Stage(0x66FF99, interactive);
 var renderer = PIXI.autoDetectRenderer(800, 800);
 var image_ground = new PIXI.Texture.fromImage('ground.jpg');
 var ground = new PIXI.TilingSprite(image_ground, 800, 800);
-var assetsToLoader = ["2gta3.json", "fighter.json", "zombie_spawn.json", "zombie_walk.json","zombie_attack.json"];
+var assetsToLoader = ["2gta3.json", "fighter.json", "zombie_spawn.json", "zombie_walk.json", "zombie_attack.json"];
 loader = new PIXI.AssetLoader(assetsToLoader);
 loader.onComplete = onAssetsLoaded
 loader.load();
 stage.addChild(ground);
-
-var move = {
-
-    napravlenie: 0,
-    shag: 0,
-    time: 0.1,
-    active: 0
-};
-var point = {
-    x: 0,
-    y: 0,
-    active: 0,
-    time: 0.1,
-    vector: {
-        x: 0,
-        y: 0,
-        k: 0
-    },
-    Way: {
-        x: 0,
-        y: 0
-    },
-    Speed: 0
-
-}
-
-torel_point = point;
-
-function norm(vector) {
-    var Way = {
-        x: 1,
-        y: 1,
-        Speed: 1
-    };
-    Way.Speed = Math.sqrt(vector.x * vector.x + vector.y * vector.y); //вычислили длину вектора
-    Way.x *= 1 / Way.Speed; //нормализуем вектор
-    Way.y *= 1 / Way.Speed;
-    return Way;
-};
-
+//Добаление игры на страницу
 $(document).ready(function() {
     $('.game').append(renderer.view);
-
     $('.game').click(function(e) {
-
-        point.x = e.clientX;
-        point.y = e.clientY;
-        point.active = 1;
+        player.target.x = e.clientX;
+        player.target.y = e.clientY;
+        player.active = 1;
+        socket.emit('target', player.target);
     });
-
-    //Клавиша нажата
-    $(document).keydown(function(event) {
-
-        if (event.which == 70) {
-            turel.active = 1;
+});
+//////////////////////Текстуры/////////////////////////////////////////////{ 
+//Класс крипов
+function Mob() {
+    this.spawn = [];
+    this.spawn_time = 60;
+    this.walk = [];
+    this.attack = [];
+    this.animationSpeed = 0.4;
+    this.active = 1;
+    this.time = 1;
+    this.anchor = {
+        x: 0.5,
+        y: 0.5
+    };
+    this.position = {
+        x: 100,
+        y: 100
+    };
+    this.movie = 0;
+    this.set_param = function() {
+            this.movie.anchor = this.anchor;
+            this.movie.animationSpeed = this.animationSpeed;
+            this.movie.position = this.position;
         }
-        //Вверх
-        if (event.which == 38) {
-            move.napravlenie = 1; //вверх
-            //Замедлление начала движения
-            move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
-            move.active = 1;
-            move.time += 0.1;
+        //Поиск игрока крипом
+    this.target = {
+        x: 0,
+        y: 0
+    }; //Цель
+    this.vector_to_target = {
+        x: 0,
+        y: 0
+    };
+    this.FindPlayer = function() {
+        this.vector_to_target.x = this.target.x - this.movie.position.x;
+        this.vector_to_target.y = this.target.y - this.movie.position.y;
+        this.movie.rotation = Math.atan2(this.vector_to_target.y, this.vector_to_target.x);
+    }; //Найти игрока
+    this.Move = function() {
+        modul_target = Math.sqrt(this.vector_to_target.x * this.vector_to_target.x + this.vector_to_target.y * this.vector_to_target.y);
+        this.movie.position.x += this.vector_to_target.x / modul_target;
+        this.movie.position.y += this.vector_to_target.y / modul_target;
+    }; //Двигаться за играком
+}
 
-            //console.log(move.shag);
-        }
-        //Вниз  
-        if (event.which == 40) {
-            move.napravlenie = 2; //вниз
-            move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
-            move.active = 1;
-            move.time += 0.1;
-        }
-        //Влево
-        if (event.which == 37) {
-            move.napravlenie = 4; //влево
-            move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
-            move.active = 1;
-            move.time += 0.1;
-        }
-        //Вправо
-        if (event.which == 39) {
-            move.napravlenie = 3; //вправо
-            move.shag = (Math.sqrt(move.time) < 3) ? Math.sqrt(move.time) : 3;
-            move.active = 1;
-            move.time += 0.1;
-        }
+function Zombie() {
+        this.active = 0;
+        this.activated = function() {
+            if (this.active == 1) { //Фаза появления
+                this.time += 1;
+            }
+            if (this.time > this.spawn_time) {
+                this.time = 0;
+                this.active = 2;
+            }
+            if (this.active == 2) { //Фаза ходьбы
+                this.movie.textures = this.walk;
+                this.movie.play();
+                this.Move();
+            }
+            if (this.active == 3) { //Фаза атаки
+                this.movie.textures = this.attack;
+                this.movie.play();
+            }
+        };
+    }
+    //Наследование
+var mob = new Mob();
+Zombie.prototype = mob;
+var zombie = new Zombie();
+////////////////////////Текстуры////////////////////////////////////}
+function Player() {
+    this.id = 0;
+    this.walk = [];
+    this.movie = null;
+    this.animationSpeed = 0.1;
+    this.active = 0;
+    this.time = 1;
+    this.speed = 3;
+    this.modul_target = 1; //Расстояние
+    this.position = {
+        x: 400,
+        y: 400
+    };
+    this.anchor = {
+        x: 0.5,
+        y: 0.5
+    };
+    this.set_param = function() {
+        this.movie.anchor = this.anchor;
+        this.movie.animationSpeed = this.animationSpeed;
+        this.movie.position = this.position;
+    };
+    this.target = {
+        x: 0,
+        y: 0
+    }; //Цель
+    this.vector_to_target = {
+        x: 0,
+        y: 0
+    };
+    this.Findtarget = function() {
+        this.vector_to_target.x = this.target.x - this.movie.position.x;
+        this.vector_to_target.y = this.target.y - this.movie.position.y;
+        this.movie.rotation = Math.atan2(this.vector_to_target.y, this.vector_to_target.x);
+    }; //Найти игрока
+    this.Move = function() {
+        this.modul_target = Math.sqrt(this.vector_to_target.x * this.vector_to_target.x + this.vector_to_target.y * this.vector_to_target.y);
+        this.movie.position.x += this.speed * this.vector_to_target.x / this.modul_target;
+        this.movie.position.y += this.speed * this.vector_to_target.y / this.modul_target;
+    }; //Двигаться к точке
+    this.activated = function() {
+        if (this.active == 1) {
+            this.Findtarget();
+            this.movie.play();
+            this.Move();
+            //  socket.emit('position', this.movie.position);
+            //  socket.emit('rotation', this.movie.rotation);
 
-    });
-    //Клавиша поднята
-    $(document).keyup(function(event) {
-        move.active = 2;
-        move.time = move.time / 10;
-        move.shag = 1;
-
-    })
-
+            if (this.modul_target < 5) {
+                this.active = 0;
+                this.movie.gotoAndStop(0);
+            }
+        }
+    }
+    this.activatedAvatar = function() {
+        if (this.active == 1) {
+            this.Findtarget();
+            this.movie.play();
+            this.Move();
+            if (this.modul_target < 20) {
+                this.active = 0;
+                target = null;
+                this.movie.gotoAndStop(0);
+            }
+        }
+    }
+}
+var player = new Player();
+//var players.push();
+socket.on('message', function(msg) {
+    console.log(msg);
+    switch (msg.event) {
+        case 'newPlayer':
+            user = new Player();
+            user.id = msg.id;
+            user.movie = new PIXI.MovieClip(player.walk);
+            user.set_param();
+            user.movie.position.x = Math.floor((Math.random() * 800) + 1);
+            user.movie.position.y = Math.floor((Math.random() * 800) + 1);
+            stage.addChild(user.movie);
+            players.push(user);
+            break;
+        case 'target':
+            target = msg;
+            break;
+        case 'move':
+            position = msg;
+            break;
+        case 'rotation':
+            rotation = msg;
+            break;
+        case 'users':
+            for (var i = 0; i < msg.players.length; i++) {
+                if (msg.id != msg.players[i].id) {
+                    user = new Player();
+                    user.id = msg.players[i].id;
+                    user.movie = new PIXI.MovieClip(player.walk);
+                    user.set_param();
+                    user.movie.position.x = Math.floor((Math.random() * 800) + 1);
+                    user.movie.position.y = Math.floor((Math.random() * 800) + 1);
+                    stage.addChild(user.movie);
+                    players.push(user);
+                }
+            };
+            break;
+        case 'disconnect':
+            console.log(players);
+            for (var i = 0; i < players.length; i++) {
+                if (players[i].id == msg.id) {
+                    stage.removeChild(players[i].movie);
+                    players.splice(i, 1);
+                }
+            };
+            console.log(players);
+            break;
+        default:
+            console.log();
+            break;
+    }
 });
 
-var zombie_walk = [];
-var zombie_attack = [];
 function onAssetsLoaded() {
-    var zombie_spawn = [];
+    //Загрузка зомби
     for (var i = 0; i < 25; i++) {
-        zombie_spawn.push(PIXI.Texture.fromFrame("zombie" + i + ".png"));
-        zombie_attack.push(PIXI.Texture.fromFrame("zombie_attack" + i + ".png"));
+        zombie.spawn.push(PIXI.Texture.fromFrame("zombie" + i + ".png"));
+        zombie.attack.push(PIXI.Texture.fromFrame("zombie_attack" + i + ".png"));
+        if (i < 22) zombie.walk.push(PIXI.Texture.fromFrame("zombie_walk" + i + ".png"));
     };
-
-
-    for (var i = 0; i < 22; i++) {
-        zombie_walk.push(PIXI.Texture.fromFrame("zombie_walk" + i + ".png"));
-    };
-
-    zombi = new PIXI.MovieClip(zombie_spawn);
-    zombi.position.x = 200;
-    zombi.position.y = 200;
-    zombi.anchor.x = zombi.anchor.y = 0.5;
-    zombi.animationSpeed = 0.4;
-   
-    zombi.interactive = true;
-    zombi.active = 1;
-    zombi.time = 0;
-    zombi.click = function() {
-        zombi.textures = zombie_walk;
-        console.log(zombi);
-        zombi.stop();
-        zombi.play();
-    }
-
-
-
-    zombi.play();
-
-    var frames2 = [];
-
-    for (var i = 0; i < 30; i++) {
-        var val = i < 10 ? "0" + i : i;
-        frames2.push(PIXI.Texture.fromFrame("rollSequence00" + val + ".png"));
-    };
-
-    var frames = [];
+    //Создание анимации
+    zombie.movie = new PIXI.MovieClip(zombie.spawn);
+    zombie.set_param();
+    // zombie.movie.play();
+    //console.log(zombie);
+    //Загрузка игрока
     for (var i = 0; i < 7; i++) {
-        var val = i;
-        frames.push(PIXI.Texture.fromFrame("player" + val + ".png"));
+        player.walk.push(PIXI.Texture.fromFrame("player" + i + ".png"));
     };
     //frames.push(PIXI.Texture.fromFrame("player6.png"));
-    movie = new PIXI.MovieClip(frames);
-    turel = new PIXI.MovieClip(frames);
-
-
-
-    turel.position.x = 100;
-    turel.position.y = 100;
-    turel.anchor.x = turel.anchor.y = 0.5;
-    stage.addChild(turel);
-
-
-    movie.position.x = 400;
-    movie.position.y = 400;
-    movie.anchor.x = movie.anchor.y = 0.5;
-    movie.animationSpeed = 0.01;
-    stage.addChild(movie);
-    stage.addChild(zombi);
-    turel.interactive = true;
-    turel.click = function() {
-
-
-    }
-
-
+    player.movie = new PIXI.MovieClip(player.walk);
+    player.set_param();
+    //player.movie.play();
+    stage.addChild(player.movie);
+    stage.addChild(zombie.movie);
     // start animating
     requestAnimFrame(animate);
 }
 
-
 function animate() {
     requestAnimFrame(animate);
-    if (turel.active == 1) {
-        turel.animationSpeed = 0.09;
-
-        turel.play();
-
-        turel.active = 0;
-    }
-
-    if (zombi.active == 1) {
-        zombi.time += 1;
-    }
-
-    if (zombi.time > 60) {
-        zombi.active = 0;
-        zombi.textures = zombie_walk;
-        //  console.log(zombi);
-        zombi.gotoAndStop(24);
-        zombi.play();
-        zombi.time = 0;
-
-        zombi.active = 2;
-
-    }
-
-
-    if (zombi.active == 2) {
-         zombi.textures = zombie_walk;
-        // zombi.gotoAndStop(25);
-         zombi.play();
-        //Зомби бежит за игроком
-        vector_to_player = {
-            x: movie.position.x - zombi.position.x,
-            y: movie.position.y - zombi.position.y
-        }
-        modul_player = Math.sqrt(vector_to_player.x * vector_to_player.x + vector_to_player.y * vector_to_player.y);
-
-        zombi.position.x += vector_to_player.x / modul_player;
-        zombi.position.y += vector_to_player.y / modul_player;
-        //Зомби смотрит на игрока
-        zombi.rotation = Math.atan2(vector_to_player.y, vector_to_player.x);
-  
-  if ((zombi.position.x + 50 > movie.position.x) && (zombi.position.x - 50 < movie.position.x))
-            if ((zombi.position.y + 50 > movie.position.y) && (zombi.position.y - 50 < movie.position.y)) {
-                zombi.gotoAndStop(0);
-                zombi.active = 3;
-               zombi.textures  =  zombie_attack;
-               zombi.gotoAndStop(22);
-               zombi.play();
+    // zombie.activated();
+    // //Взять игрока на прицел
+    // zombie.target = movie.position;
+    // zombie.FindPlayer();
+    /*  if (position) {
+          for (var i = 0; i < players.length; i++) {
+              if (players[i].id == position.id) {
+                  players[i].movie.position = position.position;
+              }
+          };
+          position = null;
+      }*/
+    if (rotation) {
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].id == rotation.id) {
+                players[i].movie.rotation = rotation.rotation;
             }
-        
+        };
+        rotation = null;
     }
 
+    if (target) {
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].id == target.id) { //находим аватар игрока
+                players[i].target = target.target;
+                players[i].active = 1;
+                players[i].activatedAvatar();
 
-    if (point.active == 1) {
-
- zombi.active = 2;  
-
-        //console.log(movie);
-        movie.animationSpeed = 0.09;
-        // movie.stop();
-        movie.play();
-        point.vector.x = point.x - movie.position.x;
-        point.vector.y = point.y - movie.position.y;
-        point.vector.k = (point.y - movie.position.y) / (point.x - movie.position.x);
-        movie.rotation = Math.atan2(point.vector.y, point.vector.x);
-        //point.active = 0;
-        //
-
-
-        modul = Math.sqrt(point.vector.x * point.vector.x + point.vector.y * point.vector.y);
-
-
-        movie.position.x += 3 * point.vector.x / modul;
-        movie.position.y += 3 * point.vector.y / modul;
-
-
-
-        // ground.tilePosition.x -= point.vector.x / modul;
-        // ground.tilePosition.y -= point.vector.y / modul;
-        // turel.position.x -= point.vector.x / modul;
-        //  turel.position.y -= point.vector.y / modul;
-
-
-
-        torel_point.vector.x = movie.position.x - turel.position.x;
-        torel_point.vector.y = movie.position.y - turel.position.y;
-
-        turel.rotation = Math.atan2(torel_point.vector.y, torel_point.vector.x);
-
-
-        if ((movie.position.x + 5 > point.x) && (movie.position.x - 5 < point.x))
-            if ((movie.position.y + 5 > point.y) && (movie.position.y - 5 < point.y)) {
-                movie.gotoAndStop(0);
-                point.active = 0;
-                point.Speed = 0;
             }
+        };
+        //rotation = null;
     }
 
-
-
-    if (move.active == 1) { //Начало движения
-        point.active = 0;
-        movie.play();
-
-        if (move.napravlenie == 1) { //вверх
-            movie.rotation = 3 * Math.PI / 2;
-            movie.position.y -= move.shag;
-            if (movie.position.y < 0)
-                movie.position.y = 800;
-            if (movie.animationSpeed < 0.04)
-                movie.animationSpeed = Math.sqrt(move.time / 100);
-            ground.tilePosition.y += move.shag;
-            // console.log(move.shag);
-
-        }
-        if (move.napravlenie == 2) { //вниз
-            movie.rotation = Math.PI / 2;
-            movie.position.y += move.shag;
-            if (movie.position.y > 800)
-                movie.position.y = 0;
-            if (movie.animationSpeed < 0.04)
-                movie.animationSpeed = Math.sqrt(move.time / 100);
-            ground.tilePosition.y -= move.shag;
-
-        }
-        if (move.napravlenie == 3) { //вправо
-            movie.rotation = 2 * Math.PI;
-            movie.position.x += move.shag;
-            if (movie.position.x > 800)
-                movie.position.x = 0;
-            if (movie.animationSpeed < 0.04)
-                movie.animationSpeed = Math.sqrt(move.time / 100);
-            ground.tilePosition.x -= move.shag;
-        }
-        if (move.napravlenie == 4) { //влево
-            movie.rotation = Math.PI;
-            movie.position.x -= move.shag;
-            if (movie.position.x < 0)
-                movie.position.x = 800;
-            if (movie.animationSpeed < 0.04)
-                movie.animationSpeed = Math.sqrt(move.time / 100);
-            ground.tilePosition.x += move.shag;
-        }
-    }
-    if (move.active == 2) {
-        movie.animationSpeed = 0.01;
-        movie.gotoAndStop(0);
-        move.active = 0;
-    }
+    player.activated();
     // render the stage
     renderer.render(stage);
 }
